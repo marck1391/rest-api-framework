@@ -3,25 +3,23 @@ import { Router } from 'express';
 import { RouteInjector, ClassInjector } from './Injector';
 import { join } from 'path';
 export function Controller(constructor) {
-    var _class;
-    if (!constructor.instance) {
+    var _class = Reflect.getMetadata('instance', constructor);
+    if (!_class) {
         var args = ClassInjector(constructor);
         _class = new constructor(...args);
-        constructor.instance = _class;
+        Reflect.defineMetadata('instance', _class, constructor);
     }
-    else
-        _class = constructor.instance;
     var _router = Router();
-    constructor.router = _router;
-    //constructor.methods.forEach(({type, fn}, route)=>{ ES5
-    for (let [route, { type, fn, middlewares }] of constructor.methods.entries()) {
+    Reflect.defineMetadata('router', _router, constructor);
+    var methods = Reflect.getMetadata('methods', constructor);
+    methods.forEach(({ route, type, fn, middlewares }) => {
         var args = [route];
         if (middlewares.length > 0) {
             args = [route, ...middlewares];
         }
         args.push(fn.bind(_class));
         _router[type.toLowerCase()](...args);
-    }
+    });
     if (_class.error) {
         /*_router.use(function(req, res, next){
             //TODO: Default _app.error404
@@ -40,10 +38,13 @@ export function Post(path = null, { middlewares } = {}) {
 }
 function RouteDecorator(type, path, middlewares = []) {
     return function (target, key, descriptor) {
-        if (!target.constructor.methods) {
-            target.constructor.methods = new Map();
+        var methods = Reflect.getMetadata('methods', target.constructor);
+        if (!methods) {
+            methods = [];
+            Reflect.defineMetadata('methods', methods, target.constructor);
         }
-        target.constructor.methods.set((path || key).replace(/^\/?(.*)/, '/$1'), {
+        methods.push({
+            route: (path || key).replace(/^\/?(.*)/, '/$1'),
             type: type,
             fn: RouteInjector(target, key),
             middlewares: middlewares
@@ -51,10 +52,11 @@ function RouteDecorator(type, path, middlewares = []) {
     };
 }
 export function Service(constructor) {
-    if (!constructor.instance) {
+    var _class = Reflect.getMetadata('instance', constructor);
+    if (!_class) {
         var args = ClassInjector(constructor);
         var _class = new constructor(...args);
-        constructor.instance = _class;
+        Reflect.defineMetadata('instance', _class, constructor);
     }
 }
 var env = process.env.NODE_ENV || '';

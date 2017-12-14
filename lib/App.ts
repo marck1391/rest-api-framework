@@ -127,7 +127,8 @@ export class App{
     var config = this.config
     var _router = Router()
     this._routes.forEach(({path, controller})=>{
-      _router.use(path, controller.router)
+      var router = Reflect.getMetadata('router', controller)
+      _router.use(path, router)
     })
     app.use(config.endpoint, _router)
   }
