@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser'
 import * as Session from 'express-session'
 import * as helmet from 'helmet'
 import * as logger from 'morgan'
+import * as jwt from 'jsonwebtoken'
 import { multipart, binary } from './FormData'
 import guuid from '../lib/Guuid'
 
@@ -40,6 +41,7 @@ export class App{
   middlewares(){
     var app = this.express
     var config = this.config
+
     app.use(logger('dev'));
     app.use(helmet())
     if(config.cache===false){

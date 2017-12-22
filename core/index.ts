@@ -34,13 +34,14 @@ export function Controller(constructor:any){
 	}
 }
 
-export function Get(path:string=null, {middlewares}:{middlewares?:Function[]}={}){
-	return RouteDecorator('GET', path, middlewares)
+function decorate(path:string=null, {middlewares}:{middlewares?:Function[]}={}){
+	return RouteDecorator(this.type, path, middlewares)
 }
 
-export function Post(path:string=null, {middlewares}:{middlewares?:Function[]}={}){
-	return RouteDecorator('POST', path, middlewares)
-}
+export var Post = decorate.bind({type: 'POST'})
+export var Get = decorate.bind({type: 'GET'})
+export var Put = decorate.bind({type: 'PUT'})
+export var Delete = decorate.bind({type: 'DELETE'})
 
 function RouteDecorator(type, path, middlewares:Function[]=[]){
 	return function(target, key:any, descriptor:PropertyDescriptor){

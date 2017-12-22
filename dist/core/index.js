@@ -30,12 +30,13 @@ export function Controller(constructor) {
         });
     }
 }
-export function Get(path = null, { middlewares } = {}) {
-    return RouteDecorator('GET', path, middlewares);
+function decorate(path = null, { middlewares } = {}) {
+    return RouteDecorator(this.type, path, middlewares);
 }
-export function Post(path = null, { middlewares } = {}) {
-    return RouteDecorator('POST', path, middlewares);
-}
+export var Post = decorate.bind({ type: 'POST' });
+export var Get = decorate.bind({ type: 'GET' });
+export var Put = decorate.bind({ type: 'PUT' });
+export var Delete = decorate.bind({ type: 'DELETE' });
 function RouteDecorator(type, path, middlewares = []) {
     return function (target, key, descriptor) {
         var methods = Reflect.getMetadata('methods', target.constructor);
