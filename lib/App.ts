@@ -4,7 +4,6 @@ import * as cookieParser from 'cookie-parser'
 import * as Session from 'express-session'
 import * as helmet from 'helmet'
 import * as logger from 'morgan'
-import * as jwt from 'jsonwebtoken'
 import { multipart, binary } from './FormData'
 import guuid from '../lib/Guuid'
 
