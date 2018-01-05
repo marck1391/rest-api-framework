@@ -65,6 +65,7 @@ function binary() {
             type: req.headers['content-type'] || 'binary',
             path: (0, _path.join)(tempDir, generateName())
         };
+        console.log('what', binaryData.length);
         var ws = (0, _fs.createWriteStream)(binaryData.path, { encoding: 'binary' });
         req.pipe(ws);
         onFinished(res, function () {

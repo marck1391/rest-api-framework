@@ -47,6 +47,7 @@ export function binary(tempDir = './temp') {
             type: req.headers['content-type'] || 'binary',
             path: join(tempDir, generateName())
         };
+        console.log('what', binaryData.length);
         var ws = createWriteStream(binaryData.path, { encoding: 'binary' });
         req.pipe(ws);
         onFinished(res, function () {
