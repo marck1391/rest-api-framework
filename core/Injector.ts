@@ -57,9 +57,9 @@ export function RouteInjector(target, key){
 
 export function ClassInjector(target){
 	var types = Reflect.getOwnMetadata('design:paramtypes', target)
-	if(!types) throw new Error('Undeclared constructor')
+	//if(!types) throw new Error('Undeclared constructor')
 	var args = []
-	types.forEach(type=>{
+	;(types||[]).forEach(type=>{
 		var instance = Reflect.getOwnMetadata('instance', type)
 		if(instance){
 			args.push(instance)

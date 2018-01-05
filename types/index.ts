@@ -15,6 +15,7 @@ export class Files{[prop: string]:any}
 
 export abstract class Response extends ServerResponse implements Res{
   [prop: string]:any
+  append:any
   /**
    * Set status `code`.
    */
