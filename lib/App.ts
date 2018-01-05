@@ -40,6 +40,7 @@ export class App{
   middlewares(){
     var app = this.express
     var config = this.config
+
     app.use(logger('dev'));
     app.use(helmet())
     if(config.cache===false){
@@ -127,7 +128,8 @@ export class App{
     var config = this.config
     var _router = Router()
     this._routes.forEach(({path, controller})=>{
-      _router.use(path, controller.router)
+      var router = Reflect.getMetadata('router', controller)
+      _router.use(path, router)
     })
     app.use(config.endpoint, _router)
   }

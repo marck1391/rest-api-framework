@@ -30,7 +30,7 @@ function modifyArgs(params, { req, res }) {
 }
 export function RouteInjector(target, key) {
     var params = getParamNames(target[key]);
-    var types = Reflect.getMetadata("design:paramtypes", target, key);
+    var types = Reflect.getMetadata('design:paramtypes', target, key);
     params = types.map((type, i) => {
         return { name: params[i], type: type.name };
     });
@@ -55,11 +55,13 @@ export function RouteInjector(target, key) {
     };
 }
 export function ClassInjector(target) {
-    var types = Reflect.getOwnMetadata("design:paramtypes", target);
+    var types = Reflect.getOwnMetadata('design:paramtypes', target);
+    //if(!types) throw new Error('Undeclared constructor')
     var args = [];
-    types.forEach(type => {
-        if (type.instance) {
-            args.push(type.instance);
+    (types || []).forEach(type => {
+        var instance = Reflect.getOwnMetadata('instance', type);
+        if (instance) {
+            args.push(instance);
         }
         else {
             args.push(null);
