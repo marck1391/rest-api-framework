@@ -40,13 +40,13 @@ export function binary(tempDir='./temp'){
   if(!existsSync(tempDir))
     mkdirSync(tempDir)
   return function(req, res, next){
-    if(req._body||!req.readable) return next()
+    if(req.method=='GET'||req._body||!req.readable||!req.headers['content-length']||req.headers['content-length']==0) return next()
     var binaryData:any = {
       length: req.headers['content-length'],
       type: req.headers['content-type']||'binary',
       path: join(tempDir, generateName())
     }
-    console.log('what', binaryData.length)
+
     var ws = createWriteStream(binaryData.path, {encoding: 'binary'})
     req.pipe(ws)
 

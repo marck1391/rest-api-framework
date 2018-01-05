@@ -59,13 +59,12 @@ function binary() {
 
     if (!(0, _fs.existsSync)(tempDir)) (0, _fs.mkdirSync)(tempDir);
     return function (req, res, next) {
-        if (req._body || !req.readable) return next();
+        if (req.method == 'GET' || req._body || !req.readable || !req.headers['content-length'] || req.headers['content-length'] == 0) return next();
         var binaryData = {
             length: req.headers['content-length'],
             type: req.headers['content-type'] || 'binary',
             path: (0, _path.join)(tempDir, generateName())
         };
-        console.log('what', binaryData.length);
         var ws = (0, _fs.createWriteStream)(binaryData.path, { encoding: 'binary' });
         req.pipe(ws);
         onFinished(res, function () {
