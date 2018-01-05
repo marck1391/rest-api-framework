@@ -1,9 +1,9 @@
-import * as express from 'express'
-import * as bodyParser from 'body-parser'
-import * as cookieParser from 'cookie-parser'
-import * as Session from 'express-session'
-import * as helmet from 'helmet'
-import * as logger from 'morgan'
+const express = require('express')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const Session = require('express-session')
+const helmet = require('helmet')
+const logger = require('morgan')
 import { multipart, binary } from './FormData'
 import guuid from '../lib/Guuid'
 
