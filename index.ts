@@ -1,3 +1,3 @@
-export { App } from './lib/App'
-export { HttpServer } from './lib/Server'
-export { HttpSecureServer } from './lib/SecureServer'
+exports.App = require('./lib/App')
+exports.HttpServer = require('./lib/Server')
+exports.HttpSecureServer = require('./lib/SecureServer')
