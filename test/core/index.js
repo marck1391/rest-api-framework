@@ -93,3 +93,4 @@ if (env.toLowerCase().includes('production')) {
     envFile = (0, _path.join)(process.cwd(), './environments/environment.prod.json');
 }
 var environment = exports.environment = require(envFile);
+//# sourceMappingURL=index.js.map

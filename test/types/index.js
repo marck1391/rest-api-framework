@@ -62,3 +62,4 @@ var Request = exports.Request = function (_IncomingMessage) {
 
   return Request;
 }(_http.IncomingMessage);
+//# sourceMappingURL=index.js.map
