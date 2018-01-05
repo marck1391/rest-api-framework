@@ -6,7 +6,7 @@ const rm = require('gulp-rimraf')
 const tsProject = ts.createProject('tsconfig.json')
 
 gulp.task('clean', function(){
-  retun gulp.src(['./dist/*', './es6/*']).pipe(rm())
+  return gulp.src(['./dist', './es6']).pipe(rm())
 })
 
 gulp.task('compile', ['clean'], function(){
