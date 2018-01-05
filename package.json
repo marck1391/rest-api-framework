@@ -1,6 +1,6 @@
 {
   "name": "raf",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Typescript Restful API Framework with Express",
   "main": "dist/index.js",
   "scripts": {
@@ -11,11 +11,6 @@
   ],
   "author": "Marco Orta<marck1391@gmail.com>",
   "license": "ISC",
-  "directories": {
-    "lib": "dist/lib",
-    "core": "dist/core",
-    "types": "dist/types"
-  },
   "dependencies": {
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",

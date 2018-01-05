@@ -123,13 +123,13 @@ export class App {
         var error404Handler = this.error404Handler;
         var errorHandler = this.errorHandler;
         app.use(function (req, res, next) {
-            var result = error404Handler(req, res, next);
+            var result = (error404Handler && error404Handler(req, res, next)) || 'Not found';
             if (result)
-                res.status(404).send(result || '');
+                res.status(404).send(result);
         });
         app.use(function (err, req, res, next) {
-            var result = errorHandler(err, req, res, next);
-            res.send(result || {});
+            var result = (errorHandler && errorHandler(err, req, res, next)) || err;
+            res.send(result);
         });
     }
 }

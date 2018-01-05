@@ -1,4 +1,3 @@
 {
-  "presets": ["es2015"],
-  "plugins": ["wildcard"]
+  "presets": ["es2015"]
 }
