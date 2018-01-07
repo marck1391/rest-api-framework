@@ -39,8 +39,10 @@ export function multipart(tempDir='./temp'){
 export function binary(tempDir='./temp'){
   if(!existsSync(tempDir))
     mkdirSync(tempDir)
+
   return function(req, res, next){
     if(req.method=='GET'||req._body||!req.readable||!req.headers['content-length']||req.headers['content-length']==0) return next()
+
     var binaryData:any = {
       length: req.headers['content-length'],
       type: req.headers['content-type']||'binary',
@@ -52,10 +54,6 @@ export function binary(tempDir='./temp'){
 
     onFinished(res, function(){
       unlink(binaryData.path, ()=>{})
-    })
-
-    req.on('close',function(){
-       console.log('abort')
     })
 
     var error = false
@@ -85,13 +83,12 @@ function onFinished(res, cb){
   var end = res.end
   res.end = function(...args){
     end.call(res, ...args)
-    !finished&&cb()
-    finished = true
+    cb()
+    //!finished&&cb()
+    //finished = true
   }
-  res.req.on('close', function(){
-    console.log('abort...')
+  res.req.on('close', cb)/*function(){
     !finished&&cb()
-    console.log('...ed')
     finished = true
-  })
+  })*/
 }

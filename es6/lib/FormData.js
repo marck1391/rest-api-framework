@@ -52,9 +52,6 @@ export function binary(tempDir = './temp') {
         onFinished(res, function () {
             unlink(binaryData.path, () => { });
         });
-        req.on('close', function () {
-            console.log('abort');
-        });
         var error = false;
         req.on('end', function () {
             if (error)
@@ -81,13 +78,12 @@ function onFinished(res, cb) {
     var end = res.end;
     res.end = function (...args) {
         end.call(res, ...args);
-        !finished && cb();
-        finished = true;
+        cb();
+        //!finished&&cb()
+        //finished = true
     };
-    res.req.on('close', function () {
-        console.log('abort...');
-        !finished && cb();
-        console.log('...ed');
-        finished = true;
-    });
+    res.req.on('close', cb); /*function(){
+      !finished&&cb()
+      finished = true
+    })*/
 }
