@@ -17,7 +17,7 @@ gulp.task('compile', ['clean'], function(){
 
 gulp.task('babel', ['compile'], function(){
   return gulp.src('./es6/**/*.js')
-  .pipe(babel({presets: ['es2015']}))
+  .pipe(babel({presets: ['es2015', 'stage-0']}))
   .pipe(gulp.dest('./dist'))
 })
 
