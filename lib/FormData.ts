@@ -54,6 +54,10 @@ export function binary(tempDir='./temp'){
       unlink(binaryData.path, ()=>{})
     })
 
+    req.on('close',function(){
+       console.log('abort')
+    })
+
     var error = false
     req.on('end', function(){
       if(error) return;
@@ -85,7 +89,9 @@ function onFinished(res, cb){
     finished = true
   }
   res.req.on('close', function(){
+    console.log('abort...')
     !finished&&cb()
+    console.log('...ed')
     finished = true
   })
 }
