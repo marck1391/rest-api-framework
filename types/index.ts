@@ -3,6 +3,7 @@ import { Socket } from 'net'
 import { ServerResponse, IncomingMessage } from 'http'
 interface ByteRange { start: number; end: number; }
 interface RequestRanges extends Array<ByteRange> { type: string; }
+
 //export class Response{[prop: string]:any}
 //export class Request{[prop: string]:any}
 export class Headers{[prop: string]:any}
