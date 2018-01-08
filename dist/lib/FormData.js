@@ -70,9 +70,6 @@ function binary() {
         onFinished(res, function () {
             (0, _fs.unlink)(binaryData.path, function () {});
         });
-        req.on('close', function () {
-            console.log('abort');
-        });
         var error = false;
         req.on('end', function () {
             if (error) return;
@@ -102,13 +99,12 @@ function onFinished(res, cb) {
         }
 
         end.call.apply(end, [res].concat(args));
-        !finished && cb();
-        finished = true;
+        cb();
+        //!finished&&cb()
+        //finished = true
     };
-    res.req.on('close', function () {
-        console.log('abort...');
-        !finished && cb();
-        console.log('...ed');
-        finished = true;
-    });
+    res.req.on('close', cb); /*function(){
+                             !finished&&cb()
+                             finished = true
+                             })*/
 }

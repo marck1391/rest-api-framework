@@ -28,12 +28,17 @@ function modifyArgs(params, _ref) {
         'Session': req.session,
         'Files': req.files
     };
+    var customTypes = {
+        header: req.headers
+    };
     var paramValues = ['Number', 'String'];
     params.forEach(function (param, i) {
         if (objects.hasOwnProperty(param.type)) {
             args.push(objects[param.type]);
+        } else if (customTypes.hasOwnProperty(param.type)) {
+            args.push(customTypes[param.type][param.name]);
         } else if (paramValues.indexOf(param.type) > -1) {
-            var val = req.params[param.name] || req.body[param.name] || req.query[param.name];
+            var val = req.params[param.name] || req.body[param.name] || req.query[param.name] || req.headers[param.name];
             val = param.type == 'Number' ? parseInt(val) : val;
             args.push(val);
         } else {
@@ -45,8 +50,15 @@ function modifyArgs(params, _ref) {
 function RouteInjector(target, key) {
     var params = (0, _GetParamNames2.default)(target[key]);
     var types = Reflect.getMetadata('design:paramtypes', target, key);
+    var customtypes = Reflect.getMetadata('argtypes', target, key);
     params = types.map(function (type, i) {
-        return { name: params[i], type: type.name };
+        var ct = {};
+        if (customtypes) {
+            ct = customtypes.filter(function (ct) {
+                return ct.arg == i;
+            }).pop() || {};
+        }
+        return { name: params[i], type: ct.type || type.name };
     });
     return function (req, res, next) {
         var newArgs = modifyArgs(params, { req: req, res: res });
@@ -57,9 +69,11 @@ function RouteInjector(target, key) {
             if (result instanceof Promise) {
                 result.then(function (r) {
                     if (res._header) return;
+                    if (typeof r == 'boolean') r = { success: r };
                     res.send(r || {}); //TODO: contenttype on router decorator
                 }).catch(next);
             } else {
+                if (typeof result == 'boolean') result = { success: result };
                 res.send(result || {});
             }
         }

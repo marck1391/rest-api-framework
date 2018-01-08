@@ -22,3 +22,7 @@ gulp.task('babel', ['compile'], function(){
 })
 
 gulp.task('build', ['clean', 'compile', 'babel'])
+
+gulp.task('dev', function(){
+  gulp.watch(['./types/**/*.ts', './core/**/*.ts', './lib/**/*.ts'], ['build'])
+})

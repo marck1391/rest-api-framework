@@ -12,6 +12,15 @@ export class Body{[prop: string]:any}
 export class Session{[prop: string]:any}
 export class Files{[prop: string]:any}
 
+export function Header(target, key, index){
+  var types = Reflect.getMetadata('argtypes', target, key)
+  if(!types){
+    types = []
+    Reflect.defineMetadata('argtypes', types, target, key)
+  }
+  types.push({arg: index, type: 'header'})
+}
+
 
 export abstract class Response extends ServerResponse implements Res{
   [prop: string]:any

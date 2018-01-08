@@ -1,9 +1,10 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 exports.Request = exports.Response = exports.Files = exports.Session = exports.Body = exports.Query = exports.Params = exports.Headers = undefined;
+exports.Header = Header;
 
 var _http = require('http');
 
@@ -16,49 +17,58 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //export class Response{[prop: string]:any}
 //export class Request{[prop: string]:any}
 var Headers = exports.Headers = function Headers() {
-  _classCallCheck(this, Headers);
+    _classCallCheck(this, Headers);
 };
 
 var Params = exports.Params = function Params() {
-  _classCallCheck(this, Params);
+    _classCallCheck(this, Params);
 };
 
 var Query = exports.Query = function Query() {
-  _classCallCheck(this, Query);
+    _classCallCheck(this, Query);
 };
 
 var Body = exports.Body = function Body() {
-  _classCallCheck(this, Body);
+    _classCallCheck(this, Body);
 };
 
 var Session = exports.Session = function Session() {
-  _classCallCheck(this, Session);
+    _classCallCheck(this, Session);
 };
 
 var Files = exports.Files = function Files() {
-  _classCallCheck(this, Files);
+    _classCallCheck(this, Files);
 };
 
+function Header(target, key, index) {
+    var types = Reflect.getMetadata('argtypes', target, key);
+    if (!types) {
+        types = [];
+        Reflect.defineMetadata('argtypes', types, target, key);
+    }
+    types.push({ arg: index, type: 'header' });
+}
+
 var Response = exports.Response = function (_ServerResponse) {
-  _inherits(Response, _ServerResponse);
+    _inherits(Response, _ServerResponse);
 
-  function Response() {
-    _classCallCheck(this, Response);
+    function Response() {
+        _classCallCheck(this, Response);
 
-    return _possibleConstructorReturn(this, (Response.__proto__ || Object.getPrototypeOf(Response)).apply(this, arguments));
-  }
+        return _possibleConstructorReturn(this, (Response.__proto__ || Object.getPrototypeOf(Response)).apply(this, arguments));
+    }
 
-  return Response;
+    return Response;
 }(_http.ServerResponse);
 
 var Request = exports.Request = function (_IncomingMessage) {
-  _inherits(Request, _IncomingMessage);
+    _inherits(Request, _IncomingMessage);
 
-  function Request() {
-    _classCallCheck(this, Request);
+    function Request() {
+        _classCallCheck(this, Request);
 
-    return _possibleConstructorReturn(this, (Request.__proto__ || Object.getPrototypeOf(Request)).apply(this, arguments));
-  }
+        return _possibleConstructorReturn(this, (Request.__proto__ || Object.getPrototypeOf(Request)).apply(this, arguments));
+    }
 
-  return Request;
+    return Request;
 }(_http.IncomingMessage);
