@@ -101,7 +101,8 @@ export class App {
             if (req.method == 'OPTIONS') {
                 //X-Requested-With when crossDomain: false (same origin)
                 //Allow Headers in controllers and application config
-                res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+                var defaults = ['X-Requested-With', 'Content-Type'];
+                res.header('Access-Control-Allow-Headers', [...defaults, ...(config.allowHeaders)].join(','));
                 res.header('Access-Control-Allow-Methods', allowedMethods);
                 return res.send(allowedMethods);
             }

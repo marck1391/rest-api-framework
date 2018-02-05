@@ -17,6 +17,8 @@ var _Guuid2 = _interopRequireDefault(_Guuid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var express = require('express');
@@ -131,7 +133,8 @@ var App = exports.App = function () {
                 if (req.method == 'OPTIONS') {
                     //X-Requested-With when crossDomain: false (same origin)
                     //Allow Headers in controllers and application config
-                    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+                    var defaults = ['X-Requested-With', 'Content-Type'];
+                    res.header('Access-Control-Allow-Headers', [].concat(defaults, _toConsumableArray(config.allowHeaders)).join(','));
                     res.header('Access-Control-Allow-Methods', allowedMethods);
                     return res.send(allowedMethods);
                 }
