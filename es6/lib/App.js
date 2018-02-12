@@ -134,7 +134,7 @@ export class App {
             if (res._header)
                 return;
             var result = (errorHandler && errorHandler(err, req, res, next)) || err;
-            res.send(result);
+            res.status(result.status).send(result);
         });
     }
 }
