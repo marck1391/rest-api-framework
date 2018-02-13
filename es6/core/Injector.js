@@ -15,7 +15,7 @@ function modifyArgs(params, { req, res }) {
     var customTypes = {
         header: req.headers
     };
-    var paramValues = ['Number', 'String'];
+    var paramValues = ['Number', 'String', 'Object', 'Boolean', 'Array'];
     params.forEach((param, i) => {
         if (objects.hasOwnProperty(param.type)) {
             args.push(objects[param.type]);
@@ -24,12 +24,29 @@ function modifyArgs(params, { req, res }) {
             args.push(customTypes[param.type][param.name]);
         }
         else if (paramValues.indexOf(param.type) > -1) {
-            var val = req.params[param.name] || req.body[param.name] || req.query[param.name] || req.headers[param.name];
-            val = param.type == 'Number' ? parseInt(val) : val;
+            var val = req.params[param.name] ||
+                req.body[param.name] ||
+                req.query[param.name] ||
+                req.headers[param.name];
+            if (param.type == 'Number' && !isNaN(val)) {
+                return args.push(parseInt(val));
+            }
+            else if (param.type == 'Array' && Array.isArray(val)) {
+                return args.push(val);
+            }
+            else if (param.type == 'Boolean' && (val == 'false' || val == 'true')) {
+                return args.push(val == 'false' ? false : val == 'true' ? true : val);
+            }
+            else if (param.type == 'Object') {
+                return args.push(val);
+            }
+            else if (param.type.toLowerCase() != typeof val) {
+                throw Error(`Param '${param.name}' is not of type ${param.type}`);
+            }
             args.push(val);
         }
         else {
-            args.push(null);
+            args.push(undefined);
         }
     });
     return args;

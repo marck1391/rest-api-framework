@@ -3,6 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 exports.RouteInjector = RouteInjector;
 exports.ClassInjector = ClassInjector;
 
@@ -31,7 +34,7 @@ function modifyArgs(params, _ref) {
     var customTypes = {
         header: req.headers
     };
-    var paramValues = ['Number', 'String'];
+    var paramValues = ['Number', 'String', 'Object', 'Boolean', 'Array'];
     params.forEach(function (param, i) {
         if (objects.hasOwnProperty(param.type)) {
             args.push(objects[param.type]);
@@ -39,10 +42,20 @@ function modifyArgs(params, _ref) {
             args.push(customTypes[param.type][param.name]);
         } else if (paramValues.indexOf(param.type) > -1) {
             var val = req.params[param.name] || req.body[param.name] || req.query[param.name] || req.headers[param.name];
-            val = param.type == 'Number' ? parseInt(val) : val;
+            if (param.type == 'Number' && !isNaN(val)) {
+                return args.push(parseInt(val));
+            } else if (param.type == 'Array' && Array.isArray(val)) {
+                return args.push(val);
+            } else if (param.type == 'Boolean' && (val == 'false' || val == 'true')) {
+                return args.push(val == 'false' ? false : val == 'true' ? true : val);
+            } else if (param.type == 'Object') {
+                return args.push(val);
+            } else if (param.type.toLowerCase() != (typeof val === 'undefined' ? 'undefined' : _typeof(val))) {
+                throw Error('Param \'' + param.name + '\' is not of type ' + param.type);
+            }
             args.push(val);
         } else {
-            args.push(null);
+            args.push(undefined);
         }
     });
     return args;
