@@ -42,11 +42,10 @@ function Controller(constructor) {
     });
     if (_class.error) {
         /*_router.use(function(req, res, next){
-            //TODO: Default _app.error404
             res.send('Error 404')
         })*/
         _router.use(function (err, req, res, next) {
-            res.send(_class.error(err));
+            res.status(err.status || err.code || 500).send(_class.error(err));
         });
     }
 }

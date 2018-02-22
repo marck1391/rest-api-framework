@@ -170,7 +170,7 @@ var App = exports.App = function () {
             app.use(function (err, req, res, next) {
                 if (res._header) return;
                 var result = errorHandler && errorHandler(err, req, res, next) || err;
-                res.status(result.status).send(result);
+                res.status(result.status || result.code || 400).send(result);
             });
         }
     }]);

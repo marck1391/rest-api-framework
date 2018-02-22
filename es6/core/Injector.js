@@ -1,7 +1,6 @@
 import getParamNames from './GetParamNames';
 function modifyArgs(params, { req, res }) {
     var args = [];
-    //TODO: Map/Bind string
     var objects = {
         'Request': req,
         'Response': res,
@@ -41,6 +40,7 @@ function modifyArgs(params, { req, res }) {
                 return args.push(val);
             }
             else if (param.type.toLowerCase() != typeof val) {
+                //TODO: HTTP Error Code: 412 Precondition Failed
                 throw Error(`Param '${param.name}' is not of type ${param.type}`);
             }
             args.push(val);

@@ -20,7 +20,6 @@ function modifyArgs(params, _ref) {
         res = _ref.res;
 
     var args = [];
-    //TODO: Map/Bind string
     var objects = {
         'Request': req,
         'Response': res,
@@ -51,6 +50,7 @@ function modifyArgs(params, _ref) {
             } else if (param.type == 'Object') {
                 return args.push(val);
             } else if (param.type.toLowerCase() != (typeof val === 'undefined' ? 'undefined' : _typeof(val))) {
+                //TODO: HTTP Error Code: 412 Precondition Failed
                 throw Error('Param \'' + param.name + '\' is not of type ' + param.type);
             }
             args.push(val);
