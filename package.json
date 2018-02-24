@@ -9,8 +9,8 @@
   "keywords": [
     ""
   ],
-  "author": "Marco Orta<marck1391@gmail.com>",
-  "license": "ISC",
+  "author": "Marco Orta <marck1391@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
