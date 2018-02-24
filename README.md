@@ -3,7 +3,8 @@ Typescript RESTful API Framework with Express
 
 1. Copy example folder ([Example](https://github.com/marck1391/rest-api-framework/tree/master/example))
 2. `npm install`
-3. `npm run start:dev`
+3. Change the mongourl on `Database.service.ts` file
+4. `npm run start:dev`
 
 
 Resources
