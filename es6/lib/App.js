@@ -1,9 +1,9 @@
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as Session from 'express-session';
-import * as helmet from 'helmet';
-import * as logger from 'morgan';
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const Session = require('express-session');
+const helmet = require('helmet');
+const logger = require('morgan');
 import { multipart, binary } from './FormData';
 import guuid from '../lib/Guuid';
 const Router = express.Router;
@@ -101,7 +101,8 @@ export class App {
             if (req.method == 'OPTIONS') {
                 //X-Requested-With when crossDomain: false (same origin)
                 //Allow Headers in controllers and application config
-                res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+                var defaults = ['X-Requested-With', 'Content-Type'];
+                res.header('Access-Control-Allow-Headers', [...defaults, ...(config.allowHeaders)].join(','));
                 res.header('Access-Control-Allow-Methods', allowedMethods);
                 return res.send(allowedMethods);
             }
@@ -123,13 +124,17 @@ export class App {
         var error404Handler = this.error404Handler;
         var errorHandler = this.errorHandler;
         app.use(function (req, res, next) {
-            var result = error404Handler(req, res, next);
+            if (res._header)
+                return;
+            var result = (error404Handler && error404Handler(req, res, next)) || 'Not found';
             if (result)
-                res.status(404).send(result || '');
+                res.status(404).send(result);
         });
         app.use(function (err, req, res, next) {
-            var result = errorHandler(err, req, res, next);
-            res.send(result || {});
+            if (res._header)
+                return;
+            var result = (errorHandler && errorHandler(err, req, res, next)) || err;
+            res.status(result.status || result.code || 400).send(result);
         });
     }
 }

@@ -1,4 +1,3 @@
 {
-  "main": "index.ts",
-  "es2015": "dist/core/index.js"
+  "main": "../dist/core/index.js"
 }

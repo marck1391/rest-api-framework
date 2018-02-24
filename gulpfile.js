@@ -17,8 +17,12 @@ gulp.task('compile', ['clean'], function(){
 
 gulp.task('babel', ['compile'], function(){
   return gulp.src('./es6/**/*.js')
-  .pipe(babel({presets: ["es2015"]}))
+  .pipe(babel({presets: ['es2015', 'stage-0']}))
   .pipe(gulp.dest('./dist'))
 })
 
 gulp.task('build', ['clean', 'compile', 'babel'])
+
+gulp.task('dev', function(){
+  gulp.watch(['./types/**/*.ts', './core/**/*.ts', './lib/**/*.ts'], ['build'])
+})

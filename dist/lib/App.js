@@ -9,30 +9,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _express = require('express');
-
-var express = _interopRequireWildcard(_express);
-
-var _bodyParser = require('body-parser');
-
-var bodyParser = _interopRequireWildcard(_bodyParser);
-
-var _cookieParser = require('cookie-parser');
-
-var cookieParser = _interopRequireWildcard(_cookieParser);
-
-var _expressSession = require('express-session');
-
-var Session = _interopRequireWildcard(_expressSession);
-
-var _helmet = require('helmet');
-
-var helmet = _interopRequireWildcard(_helmet);
-
-var _morgan = require('morgan');
-
-var logger = _interopRequireWildcard(_morgan);
-
 var _FormData = require('./FormData');
 
 var _Guuid = require('../lib/Guuid');
@@ -41,9 +17,16 @@ var _Guuid2 = _interopRequireDefault(_Guuid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var express = require('express');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var Session = require('express-session');
+var helmet = require('helmet');
+var logger = require('morgan');
 
 var Router = express.Router;
 //TODO: cors:{origin:... maxAge, credentials}
@@ -150,7 +133,8 @@ var App = exports.App = function () {
                 if (req.method == 'OPTIONS') {
                     //X-Requested-With when crossDomain: false (same origin)
                     //Allow Headers in controllers and application config
-                    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+                    var defaults = ['X-Requested-With', 'Content-Type'];
+                    res.header('Access-Control-Allow-Headers', [].concat(defaults, _toConsumableArray(config.allowHeaders)).join(','));
                     res.header('Access-Control-Allow-Methods', allowedMethods);
                     return res.send(allowedMethods);
                 }
@@ -179,12 +163,14 @@ var App = exports.App = function () {
             var error404Handler = this.error404Handler;
             var errorHandler = this.errorHandler;
             app.use(function (req, res, next) {
-                var result = error404Handler(req, res, next);
-                if (result) res.status(404).send(result || '');
+                if (res._header) return;
+                var result = error404Handler && error404Handler(req, res, next) || 'Not found';
+                if (result) res.status(404).send(result);
             });
             app.use(function (err, req, res, next) {
-                var result = errorHandler(err, req, res, next);
-                res.send(result || {});
+                if (res._header) return;
+                var result = errorHandler && errorHandler(err, req, res, next) || err;
+                res.status(result.status || result.code || 400).send(result);
             });
         }
     }]);

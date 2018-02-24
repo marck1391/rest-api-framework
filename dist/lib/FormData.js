@@ -59,7 +59,7 @@ function binary() {
 
     if (!(0, _fs.existsSync)(tempDir)) (0, _fs.mkdirSync)(tempDir);
     return function (req, res, next) {
-        if (req._body || !req.readable) return next();
+        if (req.method == 'GET' || req._body || !req.readable || !req.headers['content-length'] || req.headers['content-length'] == 0) return next();
         var binaryData = {
             length: req.headers['content-length'],
             type: req.headers['content-type'] || 'binary',
@@ -99,11 +99,12 @@ function onFinished(res, cb) {
         }
 
         end.call.apply(end, [res].concat(args));
-        !finished && cb();
-        finished = true;
+        cb();
+        //!finished&&cb()
+        //finished = true
     };
-    res.req.on('close', function () {
-        !finished && cb();
-        finished = true;
-    });
+    res.req.on('close', cb); /*function(){
+                             !finished&&cb()
+                             finished = true
+                             })*/
 }

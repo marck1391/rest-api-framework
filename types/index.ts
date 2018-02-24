@@ -3,6 +3,7 @@ import { Socket } from 'net'
 import { ServerResponse, IncomingMessage } from 'http'
 interface ByteRange { start: number; end: number; }
 interface RequestRanges extends Array<ByteRange> { type: string; }
+
 //export class Response{[prop: string]:any}
 //export class Request{[prop: string]:any}
 export class Headers{[prop: string]:any}
@@ -11,6 +12,15 @@ export class Query{[prop: string]:any}
 export class Body{[prop: string]:any}
 export class Session{[prop: string]:any}
 export class Files{[prop: string]:any}
+
+export function Header(target, key, index){
+  var types = Reflect.getMetadata('argtypes', target, key)
+  if(!types){
+    types = []
+    Reflect.defineMetadata('argtypes', types, target, key)
+  }
+  types.push({arg: index, type: 'header'})
+}
 
 
 export abstract class Response extends ServerResponse implements Res{

@@ -40,7 +40,7 @@ export function binary(tempDir = './temp') {
     if (!existsSync(tempDir))
         mkdirSync(tempDir);
     return function (req, res, next) {
-        if (req._body || !req.readable)
+        if (req.method == 'GET' || req._body || !req.readable || !req.headers['content-length'] || req.headers['content-length'] == 0)
             return next();
         var binaryData = {
             length: req.headers['content-length'],
@@ -78,11 +78,12 @@ function onFinished(res, cb) {
     var end = res.end;
     res.end = function (...args) {
         end.call(res, ...args);
-        !finished && cb();
-        finished = true;
+        cb();
+        //!finished&&cb()
+        //finished = true
     };
-    res.req.on('close', function () {
-        !finished && cb();
-        finished = true;
-    });
+    res.req.on('close', cb); /*function(){
+      !finished&&cb()
+      finished = true
+    })*/
 }

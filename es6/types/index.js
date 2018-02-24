@@ -13,6 +13,14 @@ export class Session {
 }
 export class Files {
 }
+export function Header(target, key, index) {
+    var types = Reflect.getMetadata('argtypes', target, key);
+    if (!types) {
+        types = [];
+        Reflect.defineMetadata('argtypes', types, target, key);
+    }
+    types.push({ arg: index, type: 'header' });
+}
 export class Response extends ServerResponse {
 }
 export class Request extends IncomingMessage {
