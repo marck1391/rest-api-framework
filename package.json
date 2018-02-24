@@ -1,13 +1,12 @@
 {
   "name": "raf",
   "version": "1.1.0",
-  "description": "Typescript Restful API Framework with Express",
+  "description": "Typescript RESTful API Framework with Express",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    ""
+    "framework", "restful", "api", "framework", "express", "typescript"
   ],
   "author": "Marco Orta <marck1391@gmail.com>",
   "license": "MIT",
