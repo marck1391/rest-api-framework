@@ -1,0 +1,41 @@
+const gulp = require('gulp')
+const ts = require('gulp-typescript')
+const babel = require('gulp-babel')
+const rm = require('gulp-rimraf')
+const { spawn } = require('child_process')
+var server
+
+const tsProject = ts.createProject('tsconfig.json')
+
+gulp.task('clean', function(){
+  return gulp.src(['./dist', './es6']).pipe(rm())
+})
+
+gulp.task('compile', ['clean'], function(){
+  const tsResult = tsProject.src()
+  .pipe(tsProject())
+  return tsResult.js.pipe(gulp.dest('es6'))
+});
+
+gulp.task('babel', ['compile'], function(){
+  return gulp.src('./es6/**/*.js')
+  .pipe(babel({presets: ['es2015', 'stage-0']}))
+  .pipe(gulp.dest('./dist'))
+})
+
+gulp.task('server', function() {
+  if(server) server.kill()
+  server = spawn('node', ['node_modules/ts-node/dist/bin', 'src/server.ts'], {stdio: 'inherit'})
+  server.on('close', function(code){
+    if(code===8){
+      gulp.log('Error detected, waiting for changes...')
+    }
+  })
+})
+
+gulp.task('watch', ['server'], function(){
+  gulp.watch('src/**/*.ts', ['server'])
+})
+
+gulp.task('default', ['server', 'watch'])
+gulp.task('build', ['clean', 'compile', 'babel'])
