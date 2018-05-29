@@ -28,9 +28,6 @@ export class App {
     middlewares() {
         var app = this.express;
         var config = this.config;
-        if (config.caseSensitive) {
-            app.set('case sensitive routing', true);
-        }
         app.use(logger('dev'));
         app.use(helmet());
         if (config.cache === false) {
@@ -115,7 +112,7 @@ export class App {
     routes() {
         var app = this.express;
         var config = this.config;
-        var _router = Router();
+        var _router = Router({ caseSensitive: !!config.caseSensitive });
         this._routes.forEach(({ path, controller }) => {
             var router = Reflect.getMetadata('router', controller);
             _router.use(path, router);

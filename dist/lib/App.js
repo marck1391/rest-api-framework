@@ -58,9 +58,6 @@ var App = exports.App = function () {
         value: function middlewares() {
             var app = this.express;
             var config = this.config;
-            if (config.caseSensitive) {
-                app.set('case sensitive routing', true);
-            }
             app.use(logger('dev'));
             app.use(helmet());
             if (config.cache === false) {
@@ -149,7 +146,7 @@ var App = exports.App = function () {
         value: function routes() {
             var app = this.express;
             var config = this.config;
-            var _router = Router();
+            var _router = Router({ caseSensitive: !!config.caseSensitive });
             this._routes.forEach(function (_ref) {
                 var path = _ref.path,
                     controller = _ref.controller;
