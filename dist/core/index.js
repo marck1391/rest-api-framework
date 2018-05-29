@@ -17,37 +17,41 @@ var _path = require('path');
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-function Controller(constructor) {
-    var _class = Reflect.getMetadata('instance', constructor);
-    if (!_class) {
-        var args = (0, _Injector.ClassInjector)(constructor);
-        _class = new (Function.prototype.bind.apply(constructor, [null].concat(_toConsumableArray(args))))();
-        Reflect.defineMetadata('instance', _class, constructor);
-    }
-    var _router = (0, _express.Router)();
-    Reflect.defineMetadata('router', _router, constructor);
-    var methods = Reflect.getMetadata('methods', constructor);
-    methods.forEach(function (_ref) {
-        var route = _ref.route,
-            type = _ref.type,
-            fn = _ref.fn,
-            middlewares = _ref.middlewares;
+function Controller() {
+    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-        var args = [route];
-        if (middlewares.length > 0) {
-            args = [route].concat(_toConsumableArray(middlewares));
+    return function (constructor) {
+        var _class = Reflect.getMetadata('instance', constructor);
+        if (!_class) {
+            var args = (0, _Injector.ClassInjector)(constructor);
+            _class = new (Function.prototype.bind.apply(constructor, [null].concat(_toConsumableArray(args))))();
+            Reflect.defineMetadata('instance', _class, constructor);
         }
-        args.push(fn.bind(_class));
-        _router[type.toLowerCase()].apply(_router, _toConsumableArray(args));
-    });
-    if (_class.error) {
-        /*_router.use(function(req, res, next){
-            res.send('Error 404')
-        })*/
-        _router.use(function (err, req, res, next) {
-            res.status(err.status || err.code || 500).send(_class.error(err));
+        var _router = (0, _express.Router)(config);
+        Reflect.defineMetadata('router', _router, constructor);
+        var methods = Reflect.getMetadata('methods', constructor);
+        methods.forEach(function (_ref) {
+            var route = _ref.route,
+                type = _ref.type,
+                fn = _ref.fn,
+                middlewares = _ref.middlewares;
+
+            var args = [route];
+            if (middlewares.length > 0) {
+                args = [route].concat(_toConsumableArray(middlewares));
+            }
+            args.push(fn.bind(_class));
+            _router[type.toLowerCase()].apply(_router, _toConsumableArray(args));
         });
-    }
+        if (_class.error) {
+            /*_router.use(function(req, res, next){
+                res.send('Error 404')
+            })*/
+            _router.use(function (err, req, res, next) {
+                res.status(err.status || err.code || 400).send(_class.error(err));
+            });
+        }
+    };
 }
 function decorate() {
     var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;

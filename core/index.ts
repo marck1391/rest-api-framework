@@ -4,32 +4,34 @@ import {RouteInjector, ClassInjector} from './Injector'
 import getParamNames from './GetParamNames'
 import { join } from 'path';
 
-export function Controller(constructor:any){
-	var _class = Reflect.getMetadata('instance', constructor)
-	if(!_class){
-		var args = ClassInjector(constructor)
-		_class = new constructor(...args)
-		Reflect.defineMetadata('instance', _class, constructor)
-	}
-	var _router = Router()
-	Reflect.defineMetadata('router', _router, constructor)
-	var methods = Reflect.getMetadata('methods', constructor)
-	methods.forEach(({route, type, fn, middlewares})=>{
-		var args = [route]
-		if(middlewares.length>0){
-			args = [route, ...middlewares]
+export function Controller(config:any={}){
+	return function(constructor:any){
+		var _class = Reflect.getMetadata('instance', constructor)
+		if(!_class){
+			var args = ClassInjector(constructor)
+			_class = new constructor(...args)
+			Reflect.defineMetadata('instance', _class, constructor)
 		}
-		args.push(fn.bind(_class))
-		_router[type.toLowerCase()](...args)
-	})
-
-	if(_class.error){
-		/*_router.use(function(req, res, next){
-			res.send('Error 404')
-		})*/
-		_router.use(function(err, req, res, next){
-			res.status(err.status||err.code||400).send(_class.error(err))
+		var _router = Router(config)
+		Reflect.defineMetadata('router', _router, constructor)
+		var methods = Reflect.getMetadata('methods', constructor)
+		methods.forEach(({route, type, fn, middlewares})=>{
+			var args = [route]
+			if(middlewares.length>0){
+				args = [route, ...middlewares]
+			}
+			args.push(fn.bind(_class))
+			_router[type.toLowerCase()](...args)
 		})
+
+		if(_class.error){
+			/*_router.use(function(req, res, next){
+				res.send('Error 404')
+			})*/
+			_router.use(function(err, req, res, next){
+				res.status(err.status||err.code||400).send(_class.error(err))
+			})
+		}
 	}
 }
 
